@@ -5,10 +5,7 @@ using System.Windows;
 
 namespace SSHHelper.App;
 
-/// <summary>
-/// 全局服务提供者
-/// </summary>
-public static class ServiceProvider
+public static class AppServices
 {
     public static IServiceProvider Instance { get; private set; } = null!;
 
@@ -28,19 +25,14 @@ public static class ServiceProvider
     }
 }
 
-/// <summary>
-/// 导航服务接口
-/// </summary>
 public interface INavigationService
 {
     void NavigateToLicenseView();
     void NavigateToMainView();
     object CurrentView { get; }
+    event EventHandler? CurrentViewChanged;
 }
 
-/// <summary>
-/// 导航服务实现
-/// </summary>
 public class NavigationService : INavigationService
 {
     private object _currentView = null!;
@@ -59,13 +51,13 @@ public class NavigationService : INavigationService
 
     public void NavigateToLicenseView()
     {
-        var viewModel = ServiceProvider.GetService<LicenseViewModel>();
+        var viewModel = AppServices.GetService<LicenseViewModel>();
         CurrentView = new LicenseView { DataContext = viewModel };
     }
 
     public void NavigateToMainView()
     {
-        var viewModel = ServiceProvider.GetService<MainViewModel>();
+        var viewModel = AppServices.GetService<MainViewModel>();
         CurrentView = new MainView { DataContext = viewModel };
     }
 }

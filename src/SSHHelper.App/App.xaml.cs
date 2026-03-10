@@ -11,7 +11,7 @@ namespace SSHHelper.App;
 
 public partial class App : Application
 {
-    private ServiceProvider _serviceProvider = null!;
+    private IServiceProvider _serviceContainer = null!;
     private INavigationService _navigationService = null!;
 
     protected override void OnStartup(StartupEventArgs e)
@@ -20,11 +20,11 @@ public partial class App : Application
 
         var services = new ServiceCollection();
         ConfigureServices(services);
-        _serviceProvider = services.BuildServiceProvider();
+        _serviceContainer = services.BuildServiceProvider();
         
-        ServiceProvider.Initialize(_serviceProvider);
+        AppServices.Initialize(_serviceContainer);
         
-        _navigationService = _serviceProvider.GetRequiredService<INavigationService>();
+        _navigationService = _serviceContainer.GetRequiredService<INavigationService>();
         
         CheckLicenseAndStart();
     }
@@ -50,7 +50,7 @@ public partial class App : Application
 
     private async void CheckLicenseAndStart()
     {
-        var licenseValidator = _serviceProvider.GetRequiredService<ILicenseValidator>();
+        var licenseValidator = _serviceContainer.GetRequiredService<ILicenseValidator>();
         var license = await licenseValidator.ValidateOfflineAsync();
         
         if (license != null)
@@ -72,7 +72,7 @@ public partial class App : Application
 
     protected override void OnExit(ExitEventArgs e)
     {
-        _serviceProvider?.Dispose();
+        (_serviceContainer as IDisposable)?.Dispose();
         base.OnExit(e);
     }
 }
