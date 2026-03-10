@@ -1,21 +1,26 @@
+using System.Text.Json.Serialization;
+
 namespace SSHHelper.Auth.Models;
 
-/// <summary>
-/// 授权信息
-/// </summary>
 public class LicenseInfo
 {
+    [JsonPropertyName("licenseKey")]
     public string LicenseKey { get; set; } = string.Empty;
-    public LicenseType Type { get; set; }
-    public DateTime ExpiresAt { get; set; }
+    
+    [JsonPropertyName("machineId")]
     public string MachineId { get; set; } = string.Empty;
+    
+    [JsonPropertyName("expiresAt")]
+    public DateTime ExpiresAt { get; set; }
+    
+    [JsonPropertyName("holderName")]
+    public string? HolderName { get; set; }
+    
+    public LicenseType Type { get; set; }
     public DateTime? ActivatedAt { get; set; }
     public string[] Features { get; set; } = Array.Empty<string>();
 }
 
-/// <summary>
-/// 授权类型
-/// </summary>
 public enum LicenseType
 {
     Trial,

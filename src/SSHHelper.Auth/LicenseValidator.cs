@@ -1,13 +1,10 @@
 using System.Net.Http.Json;
+using System.Text.Json;
 using SSHHelper.Auth.Interfaces;
 using SSHHelper.Auth.Models;
 
 namespace SSHHelper.Auth;
 
-/// <summary>
-/// 授权验证器实现
-/// 提供在线和离线授权验证功能
-/// </summary>
 public class LicenseValidator : ILicenseValidator
 {
     private readonly HttpClient _httpClient;
@@ -15,56 +12,49 @@ public class LicenseValidator : ILicenseValidator
     private readonly ISecureStorage _secureStorage;
     private LicenseInfo? _currentLicense;
 
-    /// <summary>
-    /// 初始化授权验证器
-    /// </summary>
-    /// <param name="machineIdGenerator">机器码生成器</param>
-    /// <param name="secureStorage">安全存储</param>
+    private const string LicenseServerUrl = "https://license.sxls.fun";
+
     public LicenseValidator(IMachineIdGenerator machineIdGenerator, ISecureStorage secureStorage)
     {
-        _httpClient = new HttpClient();
+        _httpClient = new HttpClient
+        {
+            Timeout = TimeSpan.FromSeconds(30)
+        };
         _machineIdGenerator = machineIdGenerator;
         _secureStorage = secureStorage;
     }
 
-    /// <summary>
-    /// 当前授权信息
-    /// </summary>
     public LicenseInfo? CurrentLicense => _currentLicense;
 
-    /// <summary>
-    /// 验证授权码（在线）
-    /// </summary>
-    /// <param name="licenseKey">授权码</param>
-    /// <returns>授权信息</returns>
     public async Task<LicenseInfo?> ValidateOnlineAsync(string licenseKey)
     {
         var machineId = _machineIdGenerator.Generate();
 
         try
         {
-            // 构造验证请求
             var request = new
             {
-                licenseKey,
-                machineId,
-                timestamp = DateTime.UtcNow
+                license_key = licenseKey,
+                machine_id = machineId,
+                timestamp = DateTimeOffset.UtcNow.ToUnixTimeSeconds()
             };
 
-            // 调用授权服务器验证（URL：暂时硬编码为 https://your-license-server.com/api/license/validate）
             var response = await _httpClient.PostAsJsonAsync(
-                "https://your-license-server.com/api/license/validate",
+                $"{LicenseServerUrl}/api/v1/license/validate",
                 request);
 
             if (response.IsSuccessStatusCode)
             {
-                var result = await response.Content.ReadFromJsonAsync<LicenseInfo>();
+                var jsonContent = await response.Content.ReadAsStringAsync();
+                var result = JsonSerializer.Deserialize<LicenseInfo>(jsonContent, new JsonSerializerOptions
+                {
+                    PropertyNameCaseInsensitive = true
+                });
 
                 if (result != null)
                 {
-                    // 保存到安全存储
+                    result.Type = LicenseType.Professional;
                     await _secureStorage.SaveAsync(result);
-
                     _currentLicense = result;
                     return result;
                 }
@@ -72,18 +62,23 @@ public class LicenseValidator : ILicenseValidator
 
             return null;
         }
+        catch (HttpRequestException ex)
+        {
+            Console.WriteLine($"网络请求失败: {ex.Message}");
+            return null;
+        }
+        catch (TaskCanceledException)
+        {
+            Console.WriteLine("请求超时，请检查网络连接");
+            return null;
+        }
         catch (Exception ex)
         {
-            // 记录日志（在实际应用中应使用ILogger）
             Console.WriteLine($"在线验证失败: {ex.Message}");
             return null;
         }
     }
 
-    /// <summary>
-    /// 验证授权码（离线缓存）
-    /// </summary>
-    /// <returns>授权信息</returns>
     public async Task<LicenseInfo?> ValidateOfflineAsync()
     {
         try
@@ -92,7 +87,6 @@ public class LicenseValidator : ILicenseValidator
 
             if (cached != null && cached.ExpiresAt > DateTime.UtcNow)
             {
-                // 验证机器码
                 var currentMachineId = _machineIdGenerator.Generate();
                 if (cached.MachineId == currentMachineId)
                 {
@@ -105,7 +99,6 @@ public class LicenseValidator : ILicenseValidator
         }
         catch (Exception ex)
         {
-            // 记录日志（在实际应用中应使用ILogger）
             Console.WriteLine($"离线验证失败: {ex.Message}");
             return null;
         }
