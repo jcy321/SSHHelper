@@ -1,0 +1,41 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{B8AACEC2-A4F9-4F22-82EF-D97F2AE70921}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SSHHelper.Core", "src\SSHHelper.Core\SSHHelper.Core.csproj", "{B1540902-3AF7-4730-A1EE-FB8D126DEA9B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SSHHelper.Auth", "src\SSHHelper.Auth\SSHHelper.Auth.csproj", "{D7416AD9-9433-4E5D-A061-4C407D43CAA3}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SSHHelper.App", "src\SSHHelper.App\SSHHelper.App.csproj", "{56417B54-59D6-4B58-80DB-82BDE9F24E94}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B1540902-3AF7-4730-A1EE-FB8D126DEA9B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1540902-3AF7-4730-A1EE-FB8D126DEA9B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1540902-3AF7-4730-A1EE-FB8D126DEA9B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1540902-3AF7-4730-A1EE-FB8D126DEA9B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D7416AD9-9433-4E5D-A061-4C407D43CAA3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D7416AD9-9433-4E5D-A061-4C407D43CAA3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D7416AD9-9433-4E5D-A061-4C407D43CAA3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D7416AD9-9433-4E5D-A061-4C407D43CAA3}.Release|Any CPU.Build.0 = Release|Any CPU
+		{56417B54-59D6-4B58-80DB-82BDE9F24E94}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{56417B54-59D6-4B58-80DB-82BDE9F24E94}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{56417B54-59D6-4B58-80DB-82BDE9F24E94}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{56417B54-59D6-4B58-80DB-82BDE9F24E94}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{B1540902-3AF7-4730-A1EE-FB8D126DEA9B} = {B8AACEC2-A4F9-4F22-82EF-D97F2AE70921}
+		{D7416AD9-9433-4E5D-A061-4C407D43CAA3} = {B8AACEC2-A4F9-4F22-82EF-D97F2AE70921}
+		{56417B54-59D6-4B58-80DB-82BDE9F24E94} = {B8AACEC2-A4F9-4F22-82EF-D97F2AE70921}
+	EndGlobalSection
+EndGlobal
