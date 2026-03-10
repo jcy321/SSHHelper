@@ -18,15 +18,24 @@ public partial class App : Application
     {
         base.OnStartup(e);
 
-        var services = new ServiceCollection();
-        ConfigureServices(services);
-        _serviceContainer = services.BuildServiceProvider();
-        
-        AppServices.Initialize(_serviceContainer);
-        
-        _navigationService = _serviceContainer.GetRequiredService<INavigationService>();
-        
-        CheckLicenseAndStart();
+        try
+        {
+            var services = new ServiceCollection();
+            ConfigureServices(services);
+            _serviceContainer = services.BuildServiceProvider();
+            
+            AppServices.Initialize(_serviceContainer);
+            
+            _navigationService = _serviceContainer.GetRequiredService<INavigationService>();
+            
+            CheckLicenseAndStart();
+        }
+        catch (Exception ex)
+        {
+            MessageBox.Show($"程序启动失败: {ex.Message}\n\n详细信息: {ex.StackTrace}", 
+                "错误", MessageBoxButton.OK, MessageBoxImage.Error);
+            Shutdown();
+        }
     }
 
     private void ConfigureServices(ServiceCollection services)
@@ -50,24 +59,38 @@ public partial class App : Application
 
     private async void CheckLicenseAndStart()
     {
-        var licenseValidator = _serviceContainer.GetRequiredService<ILicenseValidator>();
-        var license = await licenseValidator.ValidateOfflineAsync();
-        
-        if (license != null)
+        try
         {
-            _navigationService.NavigateToMainView();
+            var licenseValidator = _serviceContainer.GetRequiredService<ILicenseValidator>();
+            var license = await licenseValidator.ValidateOfflineAsync();
+            
+            if (license != null)
+            {
+                _navigationService.NavigateToMainView();
+            }
+            else
+            {
+                _navigationService.NavigateToLicenseView();
+            }
+
+            _navigationService.CurrentViewChanged += OnCurrentViewChanged;
         }
-        else
+        catch (Exception ex)
         {
+            MessageBox.Show($"授权验证失败: {ex.Message}", "错误", MessageBoxButton.OK, MessageBoxImage.Error);
             _navigationService.NavigateToLicenseView();
         }
-
-        _navigationService.CurrentViewChanged += OnCurrentViewChanged;
     }
 
     private void OnCurrentViewChanged(object? sender, EventArgs e)
     {
-        Current.MainWindow = _navigationService.CurrentView as Window;
+        var newWindow = _navigationService.CurrentView as Window;
+        var oldWindow = Current.MainWindow;
+        
+        Current.MainWindow = newWindow;
+        
+        // 关闭旧窗口
+        oldWindow?.Close();
     }
 
     protected override void OnExit(ExitEventArgs e)

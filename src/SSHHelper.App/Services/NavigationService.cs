@@ -52,12 +52,16 @@ public class NavigationService : INavigationService
     public void NavigateToLicenseView()
     {
         var viewModel = AppServices.GetService<LicenseViewModel>();
-        CurrentView = new LicenseView { DataContext = viewModel };
+        var view = new LicenseView { DataContext = viewModel };
+        CurrentView = view;
+        view.Show();
     }
 
     public void NavigateToMainView()
     {
         var viewModel = AppServices.GetService<MainViewModel>();
-        CurrentView = new MainView { DataContext = viewModel };
+        var view = new MainView { DataContext = viewModel };
+        CurrentView = view;
+        view.Show();
     }
 }

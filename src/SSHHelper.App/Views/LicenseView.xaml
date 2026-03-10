@@ -121,7 +121,7 @@
                     Style="{StaticResource MaterialDesignIconButton}"
                     HorizontalAlignment="Right"
                     VerticalAlignment="Bottom"
-                    Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
+                    Click="CloseButton_Click"
                     ToolTip="关闭">
                 <materialDesign:PackIcon Kind="Close"/>
             </Button>

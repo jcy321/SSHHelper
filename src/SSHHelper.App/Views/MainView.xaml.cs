@@ -3,7 +3,7 @@ using System.Windows.Controls;
 
 namespace SSHHelper.App.Views;
 
-public partial class MainView : UserControl
+public partial class MainView : Window
 {
     public MainView()
     {

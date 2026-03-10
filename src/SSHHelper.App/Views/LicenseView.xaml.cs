@@ -8,7 +8,12 @@ public partial class LicenseView : Window
     {
         InitializeComponent();
         
-        // 允许拖动窗口
         MouseLeftButtonDown += (s, e) => DragMove();
+    }
+
+    private void CloseButton_Click(object sender, RoutedEventArgs e)
+    {
+        Close();
+        Application.Current.Shutdown();
     }
 }
