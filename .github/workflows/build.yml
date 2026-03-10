@@ -45,7 +45,7 @@ jobs:
       uses: softprops/action-gh-release@v1
       with:
         files: |
-          ./publish/win-x64/SSHHelper.App.exe
-          ./publish/win-x86/SSHHelper.App.exe
+          ./publish/win-x64/SSHHelper.exe
+          ./publish/win-x86/SSHHelper.exe
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
